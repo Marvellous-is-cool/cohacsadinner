@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Overview</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <!-- Font Awesome CSS for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row p-3">
+        <button class="btn btn-dark">
+          <a href="/admin/dashboard" class="text-white">Back</a>
+        </button>
+        <h1 class="h1 text-dark col-10">Overview</h1>
+      </div>
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            id="section1-tab"
+            data-toggle="tab"
+            href="#section1"
+            role="tab"
+            aria-controls="section1"
+            aria-selected="true"
+            >Award Titles and Contestant Votes</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="section2-tab"
+            data-toggle="tab"
+            href="#section2"
+            role="tab"
+            aria-controls="section2"
+            aria-selected="false"
+            >Transaction Details</a
+          >
+        </li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content mt-2">
+        <!-- Section 1: Award Titles and Contestant Votes -->
+        <div
+          class="tab-pane fade show active"
+          id="section1"
+          role="tabpanel"
+          aria-labelledby="section1-tab"
+        >
+          <h2>Award Titles and Contestant Votes</h2>
+          <% awards.forEach((award, index) => { %>
+          <div class="card mb-4">
+            <div
+              class="card-header"
+              id="award<%= index %>Header"
+              data-toggle="collapse"
+              data-target="#award<%= index %>Collapse"
+              aria-expanded="true"
+              aria-controls="award<%= index %>Collapse"
+            >
+              <%= award.title %>
+              <!-- Add up and down icons -->
+              <span class="float-right">
+                <i
+                  class="fas fa-chevron-up"
+                  id="award<%= index %>CollapseIcon"
+                ></i>
+                <i
+                  class="fas fa-chevron-down"
+                  id="award<%= index %>ExpandIcon"
+                  style="display: none"
+                ></i>
+              </span>
+            </div>
+            <div
+              id="award<%= index %>Collapse"
+              class="collapse"
+              aria-labelledby="award<%= index %>Header"
+            >
+              <ul class="list-group list-group-flush">
+                <% award.contestants.sort((a, b) => b.votes -
+                a.votes).forEach((contestant) => { %>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <%= contestant.nickname %>
+                  <div class="custom-progress">
+                    <div
+                      class="progress-bar"
+                      style="
+                        height: 20px;
+                        background-color: #ccc;
+                        border-radius: 10px;
+                        position: relative;
+                        overflow: hidden;
+                      "
+                    >
+                      <div
+                        class="progress-bar-fill"
+                        style="
+                          position: absolute;
+                          left: 0;
+                          top: 0;
+                          height: 100%;
+                          width: <%=
+                            Math.max(1, Math.min(contestant.votes, 250)) %>%;
+                          border-radius: 10px;
+                          background-color: #28a745;
+                          transition: width 1s ease-in-out;
+                        "
+                      ></div>
+                    </div>
+                    <div class="progress-text">
+                      <%= contestant.votes %> Votes
+                    </div>
+                  </div>
+                  <span class="badge badge-primary badge-pill"
+                    ><%= contestant.votes %></span
+                  >
+                </li>
+                <% }) %>
+              </ul>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+
+        <div
+          class="tab-pane fade"
+          id="section2"
+          role="tabpanel"
+          aria-labelledby="section2-tab"
+        >
+          <div class="row mt-3">
+            <h2 class="col">Transaction Details</h2>
+            <b id="totalAmount" class="col h-5 text-danger">
+              Total Amount: N<%= payments.reduce((total, payment) => total +
+              parseFloat(payment.amount_divided_by_10 || 0), 0).toFixed(2) %>
+            </b>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Contestant</th>
+                <th scope="col">Award</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% payments.forEach((payment, index) => { %>
+              <tr>
+                <th scope="row"><%= index + 1 %></th>
+                <td><%= payment.contestant_nickname %></td>
+                <td><%= payment.award_title %></td>
+                <td>
+                  N<%= typeof payment.amount_divided_by_10 === 'number' ?
+                  (payment.amount_divided_by_10 / 10).toFixed(2) :
+                  parseFloat(payment.amount_divided_by_10 /
+                  10).toFixed(2).replace(/\.?0+$/, '') %>
+                </td>
+                <td><%= new Date(payment.payment_date).toLocaleString() %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Your additional scripts or customization can go here -->
+    <script>
+      $(document).ready(function () {
+        // Toggle up and down icons when accordion is shown or hidden
+        $(".collapse").on("show.bs.collapse", function () {
+          const iconId = $(this)
+            .attr("aria-labelledby")
+            .replace("Header", "CollapseIcon");
+          $("#" + iconId).hide();
+          $("#" + iconId.replace("CollapseIcon", "ExpandIcon")).show();
+        });
+
+        $(".collapse").on("hide.bs.collapse", function () {
+          const iconId = $(this)
+            .attr("aria-labelledby")
+            .replace("Header", "ExpandIcon");
+          $("#" + iconId).hide();
+          $("#" + iconId.replace("ExpandIcon", "CollapseIcon")).show();
+        });
+
+        // Calculate total amount
+        let totalAmount = 0;
+        <% payments.forEach((payment) => { %>
+          totalAmount += typeof <%= payment.amount_divided_by_10 %> === 'number'
+            ? <%= payment.amount_divided_by_10 %> / 10
+            : parseFloat(<%= payment.amount_divided_by_10 %> / 10);
+        <% }) %>
+
+        // Display total amount
+        $(".nav-tabs").on("click", "#section2-tab", function () {
+          $("#totalAmount").text(`Total Amount: N${totalAmount.toFixed(2).replace(/\.?0+$/, '')}`);
+        });
+      });
+    </script>
+  </body>
+</html>

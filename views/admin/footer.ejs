@@ -1,0 +1,14 @@
+<!-- views/footer.ejs -->
+
+<% if (messages.success) { %>
+<div class="alert alert-success" role="alert"><%= messages.success %></div>
+<% } else if (messages.error) { %>
+<div class="alert alert-danger" role="alert"><%= messages.error %></div>
+<% } %>
+
+<!-- Flash Messages -->
+<% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+<div class="alert alert-<%= messages[0].type %>">
+  <%= messages[0].message %>
+</div>
+<% } %>

@@ -1,0 +1,102 @@
+<!-- views/admin-dashboard.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col">
+          <!-- Award Titles with Logout and Add Contestant buttons -->
+          <h4>Award Titles</h4>
+          <div class="p-2">
+            <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+            <a href="/admin/dashboard/overview" class="btn btn-primary btn-sm"
+              >Overview</a
+            >
+            <a href="/admin/add-contestant" class="btn btn-primary btn-sm"
+              >Add Contestant</a
+            >
+          </div>
+          <ul class="list-group">
+            <% awards.forEach(award => { %>
+            <li class="list-group-item">
+              <div
+                class="card-header"
+                data-toggle="collapse"
+                data-target="#award<%= award.id %>Collapse"
+                aria-expanded="true"
+                aria-controls="award<%= award.id %>Collapse"
+              >
+                <%= award.title %>
+              </div>
+              <!-- Display Contestants for the Award -->
+              <div id="award<%= award.id %>Collapse" class="collapse">
+                <ul class="list-group mt-2">
+                  <% if (award.contestants && award.contestants.length > 0) { %>
+                  <% award.contestants.forEach(contestant => { %>
+                  <li class="list-group-item">
+                    <div class="card">
+                      <img
+                        src="/uploads/<%= contestant.photo_url %>"
+                        class="card-img-top"
+                        alt="<%= contestant.nickname %>"
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title"><%= contestant.nickname %></h5>
+                        <p class="card-text"><%= contestant.level %></p>
+                        <form
+                          action="/admin/delete-contestant/<%= award.id %>/<%= contestant.id %>"
+                          method="post"
+                          onsubmit="return confirm('Are you sure you want to delete this contestant?');"
+                        >
+                          <button type="submit" class="btn btn-danger btn-sm">
+                            Delete
+                          </button>
+                        </form>
+
+                        <a
+                          href="/admin/edit-contestant/<%= award.id %>/<%= contestant.id %>"
+                          class="btn btn-primary btn-sm"
+                        >
+                          Edit
+                        </a>
+                      </div>
+                    </div>
+                  </li>
+                  <% }); %> <% } else { %>
+                  <li class="list-group-item">
+                    No contestants for this award.
+                  </li>
+                  <% } %>
+                </ul>
+              </div>
+            </li>
+            <% }); %>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <%- include('footer') %> <% if (attachBeforeUnload) { %>
+    <script>
+      // Attach an event listener for beforeunload to trigger session destruction
+      window.addEventListener("beforeunload", async () => {
+        await fetch("/admin/destroy-session", { method: "POST" });
+      });
+    </script>
+    <% } %>
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>

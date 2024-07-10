@@ -1,0 +1,20 @@
+<!-- robot_pack_1.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Technological Background -->
+  <rect x="0" y="0" width="200" height="200" fill="#333" />
+  <!-- Robot Body -->
+  <rect x="60" y="40" width="80" height="100" fill="#4CAF50" stroke="#fff" stroke-width="2" />
+  <!-- Robot Head -->
+  <circle cx="100" cy="30" r="30" fill="#4CAF50" stroke="#fff" stroke-width="2" />
+  <!-- Robot Legs -->
+  <rect x="75" y="100" width="50" height="20" fill="#fff" />
+  <rect x="85" y="120" width="30" height="20" fill="#fff" />
+  <rect x="85" y="140" width="30" height="20" fill="#fff" />
+  <!-- Robot Arm with Box (Animated) -->
+  <rect x="70" y="100" width="5" height="40" fill="#4CAF50" stroke="#fff" stroke-width="2">
+    <animate attributeName="y" values="100;90;100" dur="2s" repeatCount="indefinite" />
+  </rect>
+  <rect x="65" y="80" width="15" height="20" fill="#4CAF50" stroke="#fff" stroke-width="2">
+    <animate attributeName="y" values="80;70;80" dur="2s" repeatCount="indefinite" />
+  </rect>
+</svg>

@@ -1,0 +1,48 @@
+body {
+  background-color: #000;
+  color: #fff;
+}
+
+h2 {
+  color: #6b2181;
+}
+
+.contestant-card {
+  border: 1px solid #6b2181;
+  padding: 10px;
+  margin: 10px;
+}
+
+.img-small {
+  max-width: 100px; /* Adjust the size as needed */
+}
+
+/* Custom styles for the "Copy Link" button */
+#copyLinkButton {
+  margin-left: 10px;
+}
+
+/* Additional styles for the success and failure messages */
+.success-message {
+  color: green;
+  font-weight: bold;
+}
+
+.failure-message {
+  color: red;
+  font-weight: bold;
+}
+
+.vote-again-button {
+  margin-top: 10px;
+}
+
+/* Styles for the modal header */
+.modal-header {
+  background-color: #007bff;
+  color: white;
+}
+
+.modal-title {
+  color: white;
+}

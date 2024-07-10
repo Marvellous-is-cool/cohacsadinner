@@ -1,0 +1,355 @@
+<!-- voteNow.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vote Now</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Include your custom CSS -->
+    <link rel="stylesheet" href="/styles/style.css" />
+  </head>
+  <body>
+    <%- include('header') %>
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <h3>Instruction</h3>
+      READ CAREFULLY!!!
+
+      <hr />
+      Click on Proceed to vote button, enter an email, then confirm and you will
+      be redirected to the paystack platform. <br />
+      <br />
+      You can click on the set amount button below to set your desired amount to
+      pay if you choose to vote multiple times at once (the deafult will be 1
+      vote of N100) - click outside after you have set the amount, then proceed
+      to vote. <br />
+      <br />
+      Kindly <b> wait or go back to the paymnet page </b> when you are done
+      paying (especially if you are paying through transfer) until you are
+      redirected back sucessfully here, else teh server will not be able to
+      process your vote, and you <b> WILL </b> lose your vote in the process.
+      <button
+        type="button"
+        class="btn btn-rounded btn-dark text-white close"
+        data-dismiss="alert"
+        onclick="this.parentElement.style.display='none';"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="container mt-5">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Vote Now</h2>
+        <button id="copyLinkButton" class="btn btn-secondary">Copy Link</button>
+      </div>
+
+      <!-- Display the selected contestant details -->
+      <div class="contestant-card">
+        <img
+          src="/uploads/<%= selectedContestant.photo_url %>"
+          alt="<%= selectedContestant.nickname %>"
+          class="img-small"
+        />
+
+        <p class="mt-2 nickname">
+          Nickname: <%= selectedContestant.nickname %>
+        </p>
+        <p>Level: <%= selectedContestant.level %></p>
+        <p>Award Title: <%= awardTitle %></p>
+
+        <!-- "Set Amount" button triggers amount modal -->
+        <button id="setAmountBtnModal" class="btn btn-dark">Set Amount</button>
+
+        <!-- "Proceed to Vote" button triggers email modal -->
+        <button id="proceedToVoteButton" class="btn btn-primary">
+          Proceed to Vote
+        </button>
+      </div>
+    </div>
+
+    <!-- Amount modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="amountModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <!-- Beautiful modal header -->
+          <div class="modal-header">
+            <h5 class="modal-title">Set Amount</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Amount form with Bootstrap validation classes -->
+            <form
+              action="/<%= selectedContestant.id %>/set-amount"
+              method="post"
+              id="amountForm"
+              class="needs-validation"
+              novalidate
+            >
+              <div class="mb-3">
+                <label for="setAmount" class="form-label"
+                  >Amount (in Naira):</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="setAmount"
+                  name="setAmount"
+                  placeholder="Enter amount in multiples of 100"
+                  min="100"
+                  step="100"
+                  required
+                />
+                <div class="invalid-feedback" id="setAmountError"></div>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-info mt-3"
+                id="setAmountButtonModal"
+              >
+                Set Amount
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="emailModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <!-- Beautiful modal header -->
+          <div class="modal-header">
+            <h5 class="modal-title">Enter a valid email address</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Email and Amount form with Bootstrap validation classes -->
+            <form
+              action="/<%= selectedContestant.id %>/payment/get-url"
+              method="post"
+              id="emailForm"
+              class="needs-validation"
+              novalidate
+            >
+              <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  required
+                />
+                <div class="invalid-feedback" id="emailError"></div>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary mt-3"
+                id="continueButton"
+                style="display: none"
+              >
+                Continue
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/validator@13.6.0"></script> -->
+    <script src="/script/emailValidation.js"></script>
+    <script src="/script/copyLink.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("proceedToVoteButton")
+          .addEventListener("click", function () {
+            // Show the email modal
+            var emailModal = new bootstrap.Modal(
+              document.getElementById("emailModal")
+            );
+            emailModal.show();
+          });
+
+        // Handle email form submission and validation
+        document
+          .getElementById("emailForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Continue with the remaining logic
+            var email = document.getElementById("email").value;
+            var amount = document.getElementById("setAmount").value.trim();
+
+            // If no amount is set, use the default value of 100
+            amount = amount ? parseInt(amount) : 100;
+
+            // Validate amount input
+            if (!isValidAmount(amount)) {
+              // Display error message and prevent form submission
+              var amountErrorElement =
+                document.getElementById("setAmountError");
+              if (amountErrorElement) {
+                amountErrorElement.innerText =
+                  "Please enter a valid amount in multiples of 100 and at least 100.";
+              }
+              return;
+            }
+
+            // If amount is valid, proceed with the submission
+            var amountErrorElement = document.getElementById("setAmountError");
+            if (amountErrorElement) {
+              amountErrorElement.innerText = ""; // Clear previous error message
+            }
+
+            // Store the entered email and amount in the request body
+            var requestBody = {
+              email: email,
+              amount: amount,
+              id: "<%= selectedContestant.id %>",
+            };
+
+            // Change button text to indicate redirection
+            var continueButton = document.getElementById("continueButton");
+            if (continueButton) {
+              continueButton.innerText =
+                "Redirecting to Paystack... Please wait";
+              continueButton.disabled = true;
+            }
+
+            // Fetch Paystack authentication URL directly from the client-side
+            fetch(`/<%= selectedContestant.id %>/payment/get-url`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(requestBody),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                // Continue processing as needed
+                if (data.authorization_url) {
+                  // Redirect to Paystack authentication URL
+                  window.location.href = data.authorization_url;
+                } else {
+                  // Handle the case where the response indicates an error
+                  console.error("Invalid response from server:", data);
+
+                  // Reset button text and enable the button on error
+                  if (continueButton) {
+                    continueButton.innerText = "Continue";
+                    continueButton.disabled = false;
+                  }
+                }
+              })
+              .catch((error) => {
+                console.error("Error during fetch request:", error);
+
+                // Reset button text and enable the button on error
+                if (continueButton) {
+                  continueButton.innerText = "Continue";
+                  continueButton.disabled = false;
+                }
+              });
+          });
+
+        // Handle amount form submission and validation
+        document
+          .getElementById("amountForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Continue with the remaining logic
+            var amount = document.getElementById("setAmount").value.trim();
+
+            // If no amount is set, use the default value of 100
+            amount = amount ? parseInt(amount) : 100;
+
+            // Validate amount input
+            if (!isValidAmount(amount)) {
+              // Display error message and prevent form submission
+              var amountErrorElement =
+                document.getElementById("setAmountError");
+              if (amountErrorElement) {
+                amountErrorElement.innerText =
+                  "Please enter a valid amount in multiples of 100 and at least 100.";
+              }
+              return;
+            }
+
+            // If amount is valid, proceed with the submission
+            var amountErrorElement = document.getElementById("setAmountError");
+            if (amountErrorElement) {
+              amountErrorElement.innerText = ""; // Clear previous error message
+            }
+
+            // Store the entered amount in the request body
+            var requestBody = {
+              amount: amount,
+              id: "<%= selectedContestant.id %>",
+            };
+
+            // You can add logic to handle the amount submission here if needed
+
+            // Hide the amount modal
+
+            document
+              .getElementById("setAmountButtonModal")
+              .addEventListener("click", function () {
+                var amountModal = new bootstrap.Modal(
+                  document.getElementById("amountModal")
+                );
+                amountModal.hide();
+              });
+          });
+
+        // Function to validate amount input
+        function isValidAmount(amount) {
+          // Check if the amount is a positive integer, greater than or equal to 100, and a multiple of 100
+          return !isNaN(amount) && amount >= 100 && amount % 100 === 0;
+        }
+
+        document
+          .getElementById("setAmountBtnModal")
+          .addEventListener("click", function () {
+            // Show the amount modal
+            var amountModal = new bootstrap.Modal(
+              document.getElementById("amountModal")
+            );
+            amountModal.show();
+          });
+      });
+    </script>
+
+    <!-- views/footer.ejs -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

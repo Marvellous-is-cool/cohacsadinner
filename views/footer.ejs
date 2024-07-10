@@ -1,0 +1,6 @@
+<!-- Flash Messages -->
+<% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+<div class="alert alert-<%= messages[0].type %>">
+  <%= messages[0].message %>
+</div>
+<% } %>

@@ -1,0 +1,118 @@
+<!-- views/admin-dashboard-add-contestant.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Contestant</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container mt-4">
+      <div class="row">
+        <!-- Award Titles Dropdown -->
+        <div class="col-md-6 offset-md-3">
+          <h4>Select Award Title</h4>
+          <form action="/admin/dashboard" method="post">
+            <div class="form-group">
+              <label for="awardTitle">Award Title:</label>
+              <select
+                class="form-control"
+                id="awardTitle"
+                name="awardTitle"
+                required
+              >
+                <!-- Populate the select options dynamically from your database -->
+                <% awards.forEach(award => { %>
+                <option value="<%= award.id %>"><%= award.title %></option>
+                <% }); %>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Select Award</button>
+          </form>
+        </div>
+
+        <!-- Add Contestant Form (Initially Hidden) -->
+        <div
+          class="col-md-6 offset-md-3 mt-4"
+          id="addContestantForm"
+          style="display: none"
+        >
+          <h4>Add Contestant</h4>
+          <form
+            action="/admin/add-contestant"
+            method="post"
+            enctype="multipart/form-data"
+            onsubmit="return confirm('Are you sure you want to add this contestant?');"
+          >
+            <!-- Hidden Field to Store Selected Award ID -->
+            <input type="hidden" id="selectedAwardId" name="selectedAwardId" />
+
+            <div class="form-group">
+              <label for="contestantName">Contestant Name:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="contestantName"
+                name="contestantName"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="contestantLevel">Contestant Level:</label>
+              <select
+                class="form-control"
+                id="contestantLevel"
+                name="contestantLevel"
+                required
+              >
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="300">300</option>
+                <option value="400">400</option>
+              </select>
+            <div class="form-group">
+              <label for="contestantPhoto">Contestant Photo:</label>
+              <input
+                type="file"
+                class="form-control-file"
+                id="contestantPhoto"
+                name="contestantPhoto"
+                accept="image/*"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+      // Script to toggle display of the add contestant form based on selected award
+      document
+        .getElementById("awardTitle")
+        .addEventListener("change", function () {
+          // Get the selected award ID
+          var selectedAwardId = this.value;
+
+          // Set the selected award ID in the hidden field
+          document.getElementById("selectedAwardId").value = selectedAwardId;
+
+          // Show the add contestant form
+          document.getElementById("addContestantForm").style.display = "block";
+        });
+    </script>
+    <%- include('footer') %>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!-- contestants.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contestants</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Include your custom CSS -->
+    <link rel="stylesheet" href="/styles/style.css" />
+    <!-- Include Google Font CSS -->
+    <!-- <link rel="stylesheet" href="path-to-your-downloaded-google-font.css" /> -->
+  </head>
+  <body>
+    <!-- Add an id to the container div for easier targeting in JavaScript -->
+    <%- include('header') %>
+    <div id="contestantsContainer" class="container mt-5">
+      <h2>
+        Contestants<% if (selectedAward && selectedAward.title) { %> for <%=
+        selectedAward.title %><% } %>
+      </h2>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search by nickname"
+        class="form-control mb-3"
+      />
+      <!-- Display contestants dynamically -->
+      <% contestants.forEach((contestant, index) => { %>
+      <div class="contestant-card">
+        <img
+          src="/uploads/<%= contestant.photo_url %>"
+          alt="<%= contestant.nickname %>"
+          class="img-small"
+        />
+
+        <p class="mt-2 nickname">Nickname: <%= contestant.nickname %></p>
+        <p>Level: <%= contestant.level %></p>
+        <a
+          href="/contestant/<%= contestant.id %>/votenow/payment"
+          class="btn btn-primary"
+        >
+          Click to Vote
+        </a>
+      </div>
+      <% }); %>
+    </div>
+
+    <!-- Include Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include the search.js file -->
+    <script src="/script/search.js"></script>
+    <!-- views/footer.ejs -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Votes</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <!-- Font Awesome CSS for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      body {
+        background-color: #000;
+        color: #fff;
+      }
+
+      .card-header {
+        background-color: rgba(97, 11, 119, 0.664);
+        border: 0px solid black;
+        box-shadow: 0px 0px 8px 5px rgba(101, 12, 160, 0.33);
+      }
+
+      h2 {
+        color: gold;
+      }
+
+      .list-group-item {
+        background-color: #000;
+        color: #fff;
+        border: 1px solid #555;
+      }
+
+      .badge-primary {
+        background-color: #007bff;
+      }
+
+      .custom-progress {
+        width: 100%;
+      }
+
+      .progress-bar {
+        height: 20px;
+        background-color: #ccc;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .progress-bar-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0;
+        border-radius: 10px;
+        background-color: #28a745;
+        transition: width 1s ease-in-out;
+      }
+
+      .progress-text {
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('header') %>
+    <div class="container mt-5">
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <h3>Click the <b>award titles</b> to reveal the contestants and their votes...</h3>
+        <button
+          type="button"
+          class="btn btn-rounded btn-dark text-white close"
+          data-dismiss="alert"
+          onclick="this.parentElement.style.display='none';"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+  
+      <div class="tab-content mt-2">
+        <!-- Section 1: Award Titles and Contestant Votes -->
+        <div
+          class="tab-pane fade show active"
+          id="section1"
+          role="tabpanel"
+          aria-labelledby="section1-tab"
+        >
+          <h2>Live Votes</h2>
+          <% awards.forEach((award, index) => { %>
+          <div class="card mb-4">
+            <div
+              class="card-header"
+              id="award<%= index %>Header"
+              data-toggle="collapse"
+              data-target="#award<%= index %>Collapse"
+              aria-expanded="true"
+              aria-controls="award<%= index %>Collapse"
+            >
+              <%= award.title %>
+              <!-- Add up and down icons -->
+              <span class="float-right">
+                <i
+                  class="fas fa-chevron-up"
+                  id="award<%= index %>CollapseIcon"
+                ></i>
+                <i
+                  class="fas fa-chevron-down"
+                  id="award<%= index %>ExpandIcon"
+                  style="display: none"
+                ></i>
+              </span>
+            </div>
+            <div
+              id="award<%= index %>Collapse"
+              class="collapse"
+              aria-labelledby="award<%= index %>Header"
+            >
+              <ul class="list-group list-group-flush">
+                <% award.contestants.sort((a, b) => b.votes -
+                a.votes).forEach((contestant) => { %>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <%= contestant.nickname %>
+                  <div class="custom-progress">
+                    <div
+                      class="progress-bar"
+                      style="
+                        height: 20px;
+                        background-color: #ccc;
+                        border-radius: 10px;
+                        position: relative;
+                        overflow: hidden;
+                      "
+                    >
+                      <div
+                        class="progress-bar-fill"
+                        style="
+                          position: absolute;
+                          left: 0;
+                          top: 0;
+                          height: 100%;
+                          width: <%=
+                            Math.max(1, Math.min(contestant.votes, 250)) %>%;
+                          border-radius: 10px;
+                          background-color: #28a745;
+                          transition: width 1s ease-in-out;
+                        "
+                      ></div>
+                    </div>
+                    <div class="progress-text">
+                      <%= contestant.votes %> Votes
+                    </div>
+                  </div>
+                  <span class="badge badge-primary badge-pill"
+                    ><%= contestant.votes %></span
+                  >
+                </li>
+                <% }) %>
+              </ul>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Your additional scripts or customization can go here -->
+    <script>
+      $(document).ready(function () {
+        // Toggle up and down icons when accordion is shown or hidden
+        $(".collapse").on("show.bs.collapse", function () {
+          const iconId = $(this)
+            .attr("aria-labelledby")
+            .replace("Header", "CollapseIcon");
+          $("#" + iconId).hide();
+          $("#" + iconId.replace("CollapseIcon", "ExpandIcon")).show();
+        });
+
+        $(".collapse").on("hide.bs.collapse", function () {
+          const iconId = $(this)
+            .attr("aria-labelledby")
+            .replace("Header", "ExpandIcon");
+          $("#" + iconId).hide();
+          $("#" + iconId.replace("ExpandIcon", "CollapseIcon")).show();
+        });
+      });
+    </script>
+  </body>
+</html>

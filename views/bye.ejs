@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <title>Event Page</title>
+    <style>
+      body {
+        background: linear-gradient(45deg, rgb(7, 1, 1), #292929);
+        color: white;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        opacity: 0;
+        animation: fadeIn 2s ease-in-out forwards;
+      }
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .container {
+        text-align: center;
+        opacity: 0;
+        animation: slideIn 2s ease-in-out forwards;
+      }
+
+      @keyframes slideIn {
+        0% {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .closed-message {
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        font-size: 36px;
+      }
+
+      p {
+        font-size: 18px;
+      }
+
+      #countdown {
+        font-size: 24px;
+        font-weight: bold;
+        color: #ffc107; /* Yellow color */
+      }
+
+      .back-home-button {
+        display: block;
+        margin: 0 auto;
+        margin-top: 30px;
+        background-color: #007bff; /* Bootstrap primary color */
+        color: white;
+        padding: 10px 20px;
+        font-size: 18px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-home-button:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+      }
+
+      .celebration-message {
+        font-size: 36px;
+        font-weight: bold;
+        color: #28a745; /* Green color */
+        margin-top: 30px;
+        animation: rotateScale 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes rotateScale {
+        0% {
+          transform: rotate(0deg) scale(1);
+        }
+        100% {
+          transform: rotate(360deg) scale(1.2);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Closed Voting Site Message -->
+      <div class="closed-message">
+        <h2>The voting site is now closed</h2>
+        <p>Thank you for your participation!</p>
+      </div>
+
+      <!-- Party Countdown -->
+      <div class="party-countdown">
+        <h5 class="mt-4">Countdown to the Party 🎉🎊</h5>
+        <div id="countdown"></div>
+      </div>
+
+      <!-- Celebration Message (Shown when countdown is over) -->
+      <div id="celebration" class="celebration-message" style="display: none">
+        Let the party begin!
+      </div>
+
+      <!-- Back Home Button -->
+      <a
+        href="https://lincssabash.netlify.app"
+        class="btn back-home-button bg-dark btn-rounded w-50"
+        >Back to Homepage</a
+      >
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      // Countdown logic remains the same as in the previous example
+      var countdownDate = new Date("January 26, 2024 00:00:00").getTime();
+
+      var x = setInterval(function () {
+        var now = new Date().getTime();
+        var distance = countdownDate - now;
+
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("countdown").innerHTML =
+          days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+        if (distance < 0) {
+          clearInterval(x);
+          document.getElementById("countdown").innerHTML = "EXPIRED";
+          document.getElementById("celebration").style.display = "block";
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>

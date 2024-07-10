@@ -1,0 +1,12 @@
+<!-- cat_3.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Cat Body -->
+  <ellipse cx="100" cy="120" rx="40" ry="60" fill="#FFC107" />
+  <!-- Cat Head -->
+  <ellipse cx="100" cy="70" rx="30" ry="35" fill="#FFC107" />
+  <!-- Clock -->
+  <rect x="95" y="35" width="10" height="10" fill="#DC3545" stroke="#fff" stroke-width="2" />
+  <line x1="100" y1="35" x2="100" y2="45" stroke="#fff" stroke-width="2" />
+  <!-- Tail -->
+  <line x1="120" y1="130" x2="140" y2="90" stroke="#FFC107" stroke-width="4" />
+</svg>

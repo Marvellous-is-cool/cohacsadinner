@@ -1,0 +1,84 @@
+<!-- views/admin/edit-contestant.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Contestant</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container mt-4">
+      <h2>Edit Contestant</h2>
+      <form action="/admin/edit-contestant/<%= contestant.id %>" method="post">
+        <div class="form-group">
+          <label for="nickname">Nickname</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nickname"
+            name="nickname"
+            value="<%= contestant.nickname %>"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="level">Level</label>
+          <input
+            type="number"
+            class="form-control"
+            id="level"
+            name="level"
+            value="<%= contestant.level %>"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="photo_url">Photo URL</label>
+          <input
+            type="text"
+            class="form-control"
+            id="photo_url"
+            name="photo_url"
+            value="<%= contestant.photo_url %>"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="votes">Votes</label>
+          <input
+            type="number"
+            class="form-control"
+            id="votes"
+            name="votes"
+            value="<%= contestant.votes %>"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="photo">Upload Photo</label>
+          <input
+            type="file"
+            class="form-control-file"
+            id="photo"
+            name="photo"
+            accept="image/*"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Update Contestant</button>
+        <a href="/admin/dashboard" class="btn btn-secondary ml-2">Cancel</a>
+      </form>
+    </div>
+
+    <%- include('footer') %>
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
