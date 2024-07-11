@@ -88,7 +88,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  res.status(404).render("bye"); // Assuming you have a 404.ejs file in the 'views' folder
+  res.status(404).render("bye");
 });
 
 // Start the server
