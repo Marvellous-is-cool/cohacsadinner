@@ -7,7 +7,7 @@ const editController = require("../../controllers/editController");
 router.get("/add-contestant", async (req, res) => {
   try {
     // Fetch award titles from the database using the updated method
-    const awards = await adminController.getAwardTitles();
+    const awards = await adminController.getPostTitles();
 
     res.render("admin/add-contestant", { awards });
   } catch (error) {
