@@ -14,9 +14,67 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <style>
+      body {
+        background-color: #f0f2f5;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .container {
+        margin-top: 40px;
+      }
+      .nav-tabs .nav-link.active {
+        background-color: #0b2e53;
+        color: white;
+        border-radius: 5px;
+      }
+      .nav-tabs .nav-link {
+        border-radius: 5px;
+        color: #0b2847;
+      }
+      .card-header {
+        background-color: #4f1296;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .card-body {
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+      .card {
+        margin-bottom: 20px;
+        border: none;
+      }
+      .progress-bar-fill {
+        background-color: #28a745;
+        border-radius: 10px;
+        transition: width 1s ease-in-out;
+      }
+      .progress-text {
+        font-size: 0.9rem;
+        margin-top: 5px;
+        color: #6c757d;
+      }
+      .btn-dark {
+        background-color: #343a40;
+        border: none;
+        margin-right: 10px;
+      }
+      .btn-dark a {
+        color: white;
+        text-decoration: none;
+      }
+      .table th,
+      .table td {
+        vertical-align: middle;
+      }
+    </style>
   </head>
   <body>
-    <div class="container mt-5">
+    <div class="container">
       <div class="row p-3">
         <button class="btn btn-dark">
           <a href="/admin/dashboard" class="text-white">Back</a>
@@ -152,8 +210,8 @@
             </b>
           </div>
 
-          <table class="table">
-            <thead>
+          <table class="table table-hover table-striped mt-3">
+            <thead class="thead-dark">
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Contestant</th>

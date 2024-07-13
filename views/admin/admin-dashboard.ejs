@@ -1,5 +1,3 @@
-<!-- views/admin-dashboard.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,81 +8,155 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+    />
+    <style>
+      body {
+        background-color: #f4f7fa;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .container {
+        margin-top: 40px;
+      }
+      h4 {
+        color: #495057;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+      }
+      .btn {
+        margin-right: 5px;
+        margin-bottom: 5px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        padding: 10px 20px;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+      }
+      .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+      }
+      .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+      }
+      .card-header {
+        cursor: pointer;
+        background-color: #1402247c;
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .card {
+        margin-bottom: 20px;
+        border: none;
+        border-radius: 20px;
+      }
+      .card img {
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 10px 10px 0 0;
+      }
+      .card-body {
+        background-color: #ffffff;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+      .card-title {
+        font-size: 1.2rem;
+        color: #343a40;
+      }
+      .card-text {
+        font-size: 1rem;
+        color: #6c757d;
+      }
+      .list-group-item {
+        background-color: transparent;
+        border: none;
+        padding-left: 0;
+        padding-right: 0;
+      }
+      .p-2 {
+        text-align: center;
+      }
+    </style>
   </head>
 
   <body>
-    <div class="container mt-4">
-      <div class="row">
-        <div class="col">
-          <!-- Award Titles with Logout and Add Contestant buttons -->
-          <h4>Award Titles</h4>
-          <div class="p-2">
-            <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
-            <a href="/admin/dashboard/overview" class="btn btn-primary btn-sm"
-              >Overview</a
-            >
-            <a href="/admin/add-contestant" class="btn btn-primary btn-sm"
-              >Add Contestant</a
-            >
-          </div>
-          <ul class="list-group">
-            <% awards.forEach(award => { %>
-            <li class="list-group-item">
-              <div
-                class="card-header"
-                data-toggle="collapse"
-                data-target="#award<%= award.id %>Collapse"
-                aria-expanded="true"
-                aria-controls="award<%= award.id %>Collapse"
-              >
-                <%= award.title %>
-              </div>
-              <!-- Display Contestants for the Award -->
-              <div id="award<%= award.id %>Collapse" class="collapse">
-                <ul class="list-group mt-2">
-                  <% if (award.contestants && award.contestants.length > 0) { %>
-                  <% award.contestants.forEach(contestant => { %>
-                  <li class="list-group-item">
-                    <div class="card">
-                      <img
-                        src="/uploads/<%= contestant.photo_url %>"
-                        class="card-img-top"
-                        alt="<%= contestant.nickname %>"
-                      />
-                      <div class="card-body">
-                        <h5 class="card-title"><%= contestant.nickname %></h5>
-                        <p class="card-text"><%= contestant.level %></p>
-                        <form
-                          action="/admin/delete-contestant/<%= award.id %>/<%= contestant.id %>"
-                          method="post"
-                          onsubmit="return confirm('Are you sure you want to delete this contestant?');"
-                        >
-                          <button type="submit" class="btn btn-danger btn-sm">
-                            Delete
-                          </button>
-                        </form>
-
-                        <a
-                          href="/admin/edit-contestant/<%= award.id %>/<%= contestant.id %>"
-                          class="btn btn-primary btn-sm"
-                        >
-                          Edit
-                        </a>
-                      </div>
-                    </div>
-                  </li>
-                  <% }); %> <% } else { %>
-                  <li class="list-group-item">
-                    No contestants for this award.
-                  </li>
-                  <% } %>
-                </ul>
-              </div>
-            </li>
-            <% }); %>
-          </ul>
-        </div>
+    <div class="container">
+      <h4>Award Titles</h4>
+      <div class="p-2">
+        <a href="/logout" class="btn btn-danger">Logout</a>
+        <a href="/admin/dashboard/overview" class="btn btn-primary">Overview</a>
+        <a href="/admin/add-contestant" class="btn btn-primary"
+          >Add Contestant</a
+        >
       </div>
+      <ul class="list-group">
+        <% awards.forEach(award => { %>
+        <li class="list-group-item" data-aos="fade-up">
+          <div
+            class="card-header"
+            data-toggle="collapse"
+            data-target="#award<%= award.id %>Collapse"
+            aria-expanded="true"
+            aria-controls="award<%= award.id %>Collapse"
+          >
+            <%= award.title %>
+          </div>
+          <!-- Display Contestants for the Award -->
+          <div id="award<%= award.id %>Collapse" class="collapse">
+            <ul class="list-group mt-2">
+              <% if (award.contestants && award.contestants.length > 0) { %> <%
+              award.contestants.forEach(contestant => { %>
+              <li class="list-group-item" data-aos="fade-up">
+                <div class="card">
+                  <img
+                    src="/uploads/<%= contestant.photo_url %>"
+                    class="card-img-top"
+                    alt="<%= contestant.nickname %>"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title"><%= contestant.nickname %></h5>
+                    <p class="card-text"><%= contestant.level %></p>
+                    <form
+                      action="/admin/delete-contestant/<%= award.id %>/<%= contestant.id %>"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to delete this contestant?');"
+                    >
+                      <button type="submit" class="btn btn-danger">
+                        Delete
+                      </button>
+                    </form>
+                    <a
+                      href="/admin/edit-contestant/<%= award.id %>/<%= contestant.id %>"
+                      class="btn btn-primary"
+                    >
+                      Edit
+                    </a>
+                  </div>
+                </div>
+              </li>
+              <% }); %> <% } else { %>
+              <li class="list-group-item" data-aos="fade-up">
+                No contestants for this award.
+              </li>
+              <% } %>
+            </ul>
+          </div>
+        </li>
+        <% }); %>
+      </ul>
     </div>
     <%- include('footer') %> <% if (attachBeforeUnload) { %>
     <script>
@@ -94,9 +166,13 @@
       });
     </script>
     <% } %>
-    <!-- Bootstrap JS and jQuery -->
+    <!-- Bootstrap JS, jQuery, and AOS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
   </body>
 </html>
