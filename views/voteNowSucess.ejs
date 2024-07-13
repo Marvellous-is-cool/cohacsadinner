@@ -1,4 +1,3 @@
-<!-- voteNowSuccess.ejs -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -91,10 +90,10 @@
         <% } else if (status === 'failed') { %>
         <h2 class="text-danger">Sorry, your payment was not successful</h2>
         <% } else { %>
-        <h2 class="text-info">There is an error within your payment</h2>
+        <h2 class="text-info">There is an error with your payment</h2>
         <% } %>
       </div>
-      <!-- Display the selected contestant details -->
+
       <div class="contestant-card">
         <% if (selectedContestant) { %>
         <img
@@ -105,10 +104,9 @@
         <p class="mt-2 nickname">
           Nickname: <%= selectedContestant.nickname %>
         </p>
-        <p>Department: <%= selectedContestant.level %></p>
+        <p>Level: <%= selectedContestant.level %></p>
         <p>Award Title: <%= selectedContestant.award_titles[0] %></p>
-        <!-- Assuming there's only one award title -->
-        <!-- Display "Voted Successfully" or "Try Again" button based on payment status -->
+
         <% if (status === 'success') { %>
         <button class="btn btn-success" disabled>Voted Successfully!</button>
         <a
@@ -128,11 +126,10 @@
         <% } else { %>
         <p class="failure-message">Invalid payment status. Please try again.</p>
         <% } %> <% } else { %>
-        <!-- Render a message when selectedContestant is not available -->
         <p class="failure-message">Contestant details not available.</p>
         <% } %>
       </div>
-      <!-- Button to set the amount -->
+
       <button
         id="setAmountButton"
         class="btn btn-info mt-3"
@@ -142,7 +139,6 @@
         Set Amount
       </button>
 
-      <!-- Modal for entering the amount -->
       <div class="modal" tabindex="-1" role="dialog" id="amountModal">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -156,7 +152,6 @@
               ></button>
             </div>
             <div class="modal-body">
-              <!-- Input field for entering the amount -->
               <div class="mb-3">
                 <label for="amount" class="form-label">Enter Amount:</label>
                 <input
@@ -165,11 +160,11 @@
                   id="amount"
                   placeholder="100"
                   step="100"
+                  min="100"
                 />
               </div>
             </div>
             <div class="modal-footer">
-              <!-- Confirm button to proceed with the set amount -->
               <button
                 type="button"
                 class="btn btn-primary"
@@ -183,110 +178,81 @@
       </div>
     </div>
 
-    <!-- Include necessary scripts and libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // Function to retrieve email from local storage
         function retrieveStoredEmail() {
           return localStorage.getItem("userEmail");
         }
 
-        // Function to initiate the process of fetching authentication URL
         function initiateAuthenticationRequest(amount) {
-          // Retrieve stored email
-          var storedEmail = retrieveStoredEmail();
-
-          // Check if email is available
+          const storedEmail = retrieveStoredEmail();
           if (storedEmail) {
-            // Prepare request body
-            var requestBody = {
-              email: storedEmail,
-              amount: amount,
-            };
-
-            // Fetch Paystack authentication URL from the server using POST request
             fetch(`/<%= selectedContestant.id %>/payment/get-url`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(requestBody),
+              body: JSON.stringify({ email: storedEmail, amount: amount }),
             })
               .then((response) => response.json())
               .then((data) => {
-                // Continue processing as needed
                 if (data.authorization_url) {
-                  // Redirect to Paystack authentication URL
                   window.location.href = data.authorization_url;
                 } else {
                   console.error("Invalid response from server:", data);
-                  // Handle the case where the response indicates an error
                 }
               })
-              .catch((error) => {
-                console.error("Error during fetch request:", error);
-                // Handle fetch error
-              });
+              .catch((error) =>
+                console.error("Error during fetch request:", error)
+              );
           } else {
             console.error("Stored email not found.");
-            // Handle the case where stored email is not available
           }
         }
 
-        // Handle "Vote Again" button click
-        var voteAgainButton = document.getElementById("voteAgainButton");
-        if (voteAgainButton) {
-          voteAgainButton.addEventListener("click", function () {
+        document
+          .getElementById("voteAgainButton")
+          ?.addEventListener("click", function () {
             initiateAuthenticationRequest();
           });
-        } else {
-          console.error("Vote Again button not found.");
-        }
 
-        // Handle "Try Again" button click
-        var tryAgainButton = document.getElementById("tryAgainButton");
-        if (tryAgainButton) {
-          tryAgainButton.addEventListener("click", function () {
+        document
+          .getElementById("tryAgainButton")
+          ?.addEventListener("click", function () {
             initiateAuthenticationRequest();
           });
-        } else {
-          console.error("Try Again button not found.");
-        }
 
-        // Show the modal when the "Set Amount" button is clicked
-        var setAmountButton = document.getElementById("setAmountButton");
-        setAmountButton.addEventListener("click", function () {
-          var amountModal = new bootstrap.Modal(
-            document.getElementById("amountModal")
-          );
-          amountModal.show();
-        });
-
-        // Handle the "Confirm" button click in the modal
-        var confirmPaymentButton = document.getElementById(
-          "confirmPaymentButton"
-        );
-        confirmPaymentButton.addEventListener("click", function () {
-          // Retrieve the amount from the input field
-          var amountInput = document.getElementById("amount");
-          var amount = amountInput.value;
-
-          // Validate the amount
-          if (amount && /^\d+$/.test(amount)) {
-            // Initiate the authentication request
-            initiateAuthenticationRequest(amount);
-
-            // Close the modal
-            var amountModal = new bootstrap.Modal(
+        document
+          .getElementById("setAmountButton")
+          .addEventListener("click", function () {
+            const amountModal = new bootstrap.Modal(
               document.getElementById("amountModal")
             );
-            amountModal.hide();
-          } else {
-            // Display an error message or handle invalid amount
-            console.error("Invalid amount. Please enter a valid number.");
-          }
-        });
+            amountModal.show();
+          });
+
+        document
+          .getElementById("confirmPaymentButton")
+          .addEventListener("click", function () {
+            const amountInput = document.getElementById("amount");
+            const amount = amountInput.value;
+            if (amount && /^\d+$/.test(amount)) {
+              const amountValue = parseInt(amount);
+              if (amountValue >= 100 && amountValue % 100 === 0) {
+                initiateAuthenticationRequest(amountValue);
+                bootstrap.Modal.getInstance(
+                  document.getElementById("amountModal")
+                ).hide();
+              } else {
+                alert(
+                  "Please enter a valid amount (minimum 100, in multiples of 100)."
+                );
+              }
+            } else {
+              alert("Please enter a valid amount.");
+            }
+          });
       });
     </script>
   </body>

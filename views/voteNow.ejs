@@ -76,16 +76,13 @@
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
       <h3>Instruction</h3>
       READ CAREFULLY!!!
-
       <hr />
-      Click on Proceed to vote button, enter an email, then confirm and you will
-      be redirected to the Paystack platform. <br />
-      <br />
-      You can click on the set amount button below to set your desired amount to
+      Click on the Proceed to Vote button, enter an email, then confirm and you
+      will be redirected to the Paystack platform. <br /><br />
+      You can click on the Set Amount button below to set your desired amount to
       pay if you choose to vote multiple times at once (the default will be 1
       vote of N100) - click outside after you have set the amount, then proceed
-      to vote. <br />
-      <br />
+      to vote. <br /><br />
       Kindly <b> wait or go back to the payment page </b> when you are done
       paying (especially if you are paying through transfer) until you are
       redirected back successfully here, else the server will not be able to
@@ -213,7 +210,6 @@
                 type="submit"
                 class="btn btn-primary mt-3"
                 id="continueButton"
-                style="display: none"
               >
                 Continue
               </button>
@@ -230,10 +226,81 @@
     <script src="/script/emailValidation.js"></script>
     <script src="/script/copyLink.js"></script>
     <script>
-      // JavaScript logic remains the same
       document.addEventListener("DOMContentLoaded", function () {
-        // Modal handling and other logic...
+        document
+          .getElementById("proceedToVoteButton")
+          .addEventListener("click", function () {
+            var emailModal = new bootstrap.Modal(
+              document.getElementById("emailModal")
+            );
+            emailModal.show();
+          });
+
+        document
+          .getElementById("setAmountBtnModal")
+          .addEventListener("click", function () {
+            var amountModal = new bootstrap.Modal(
+              document.getElementById("amountModal")
+            );
+            amountModal.show();
+          });
+
+        document
+          .getElementById("amountForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+            var amount = parseInt(
+              document.getElementById("setAmount").value.trim()
+            );
+
+            if (!isValidAmount(amount)) {
+              document.getElementById("setAmountError").innerText =
+                "Please enter a valid amount in multiples of 100 and at least 100.";
+              return;
+            }
+
+            document.getElementById("setAmountError").innerText = ""; // Clear error
+            this.submit(); // Proceed with form submission
+          });
+
+        document
+          .getElementById("emailForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+            var email = document.getElementById("email").value;
+            var amount =
+              document.getElementById("setAmount").value.trim() || 100; // Default to 100
+
+            var requestBody = {
+              email: email,
+              amount: parseInt(amount),
+              id: "<%= selectedContestant.id %>",
+            };
+
+            fetch(`/<%= selectedContestant.id %>/payment/get-url`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(requestBody),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.authorization_url) {
+                  window.location.href = data.authorization_url; // Redirect to Paystack
+                } else {
+                  console.error("Invalid response from server:", data);
+                }
+              })
+              .catch((error) =>
+                console.error("Error during fetch request:", error)
+              );
+          });
       });
+
+      function isValidAmount(amount) {
+        return amount >= 100 && amount % 100 === 0;
+      }
     </script>
   </body>
 </html>
