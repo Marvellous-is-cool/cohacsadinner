@@ -1,6 +1,21 @@
 const connection = require("../models/connection"); // Update the path based on your file structure
 const uploadFile = require("../helpers/uploadFile"); // Update the path based on your file structure
 
+// Function to fetch a contestant by ID
+const getContestantById = async (id) => {
+  try {
+    const [rows] = await connection.execute(
+      "SELECT * FROM contestants WHERE id = ?",
+      [id]
+    );
+    return rows[0];
+  } catch (error) {
+    console.error("Error fetching contestant by ID:", error);
+    throw error;
+  }
+};
+
+// Function to update contestant details
 const updateContestant = async (contestantId, editedDetails) => {
   try {
     // Fetch the existing contestant details for photo URL
@@ -41,15 +56,16 @@ const updateContestant = async (contestantId, editedDetails) => {
     throw error;
   }
 };
+
+// Function to render the edit contestant page
 const renderEditContestantPage = async (req, res) => {
   try {
     // Fetch the necessary data (e.g., contestant details) based on req.params
     const awardId = req.params.awardId;
     const contestantId = req.params.contestantId;
-    // Fetch the necessary data (e.g., contestant details) based on req.params
-    const contestant = await getContestantById(contestantId); // Implement this function
+    const contestant = await getContestantById(contestantId);
 
-    res.render("/admin/edit-contestant", { awardId, contestant });
+    res.render("admin/edit-contestant", { awardId, contestant }); // Update the path here
   } catch (error) {
     console.error("Error rendering edit page:", error);
     req.flash("error", "Error rendering edit page. Please try again.");
@@ -57,6 +73,7 @@ const renderEditContestantPage = async (req, res) => {
   }
 };
 
+// Function to handle the edit contestant form submission
 const editContestant = async (req, res) => {
   try {
     // Get the edited contestant details from the form submission
