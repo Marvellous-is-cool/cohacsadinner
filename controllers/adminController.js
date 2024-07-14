@@ -3,6 +3,8 @@
 const connection = require("../models/connection");
 const uploadFile = require("../helpers/uploadFile");
 const awardContestantController = require("./awardContestantController");
+const fs = require("fs");
+const path = require("path");
 
 const adminController = {
   // Get admin dashboard data (e.g., award titles)
@@ -75,6 +77,12 @@ const adminController = {
       );
       res.status(400).send("Contestant name is required.");
       return;
+    }
+
+    // Ensure the uploads directory exists
+    const uploadDir = path.join(__dirname, "..", "uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
 
     // Use uploadFile to handle file upload and get the generated filename
@@ -153,8 +161,6 @@ const adminController = {
         ]);
 
         // Delete the contestant's photo from the uploads folder
-        const fs = require("fs");
-        const path = require("path");
         const photoPath = path.join("uploads", photoUrl);
         if (fs.existsSync(photoPath)) {
           fs.unlinkSync(photoPath);

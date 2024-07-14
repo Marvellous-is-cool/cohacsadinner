@@ -138,13 +138,7 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form
-              action="/<%= selectedContestant.id %>/set-amount"
-              method="post"
-              id="amountForm"
-              class="needs-validation"
-              novalidate
-            >
+            <form id="amountForm" class="needs-validation" novalidate>
               <div class="mb-3">
                 <label for="setAmount" class="form-label"
                   >Amount (in Naira):</label
@@ -227,6 +221,8 @@
     <script src="/script/copyLink.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        var setAmount = 100; // Default amount
+
         document
           .getElementById("proceedToVoteButton")
           .addEventListener("click", function () {
@@ -259,48 +255,46 @@
               return;
             }
 
+            setAmount = amount; // Set the amount
             document.getElementById("setAmountError").innerText = ""; // Clear error
-            this.submit(); // Proceed with form submission
+            var amountModal = bootstrap.Modal.getInstance(
+              document.getElementById("amountModal")
+            );
+            amountModal.hide(); // Close the modal
           });
 
         document
           .getElementById("emailForm")
           .addEventListener("submit", function (event) {
             event.preventDefault();
-            var email = document.getElementById("email").value;
-            var amount =
-              document.getElementById("setAmount").value.trim() || 100; // Default to 100
+            var email = document.getElementById("email").value.trim();
+            if (!isValidEmail(email)) {
+              document.getElementById("emailError").innerText =
+                "Please enter a valid email address.";
+              return;
+            }
+            document.getElementById("emailError").innerText = ""; // Clear error
 
-            var requestBody = {
-              email: email,
-              amount: parseInt(amount),
-              id: "<%= selectedContestant.id %>",
-            };
+            // Prepare the payment URL with email and amount
+            var form = event.target;
+            var actionUrl = form.getAttribute("action");
+            var url = new URL(actionUrl, window.location.origin);
+            url.searchParams.append("amount", setAmount);
+            url.searchParams.append("email", email);
 
-            fetch(`/<%= selectedContestant.id %>/payment/get-url`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(requestBody),
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                if (data.authorization_url) {
-                  window.location.href = data.authorization_url; // Redirect to Paystack
-                } else {
-                  console.error("Invalid response from server:", data);
-                }
-              })
-              .catch((error) =>
-                console.error("Error during fetch request:", error)
-              );
+            // Redirect to the payment URL
+            window.location.href = url.toString();
           });
-      });
 
-      function isValidAmount(amount) {
-        return amount >= 100 && amount % 100 === 0;
-      }
+        function isValidAmount(amount) {
+          return amount >= 100 && amount % 100 === 0;
+        }
+
+        function isValidEmail(email) {
+          var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return emailRegex.test(email);
+        }
+      });
     </script>
   </body>
 </html>
