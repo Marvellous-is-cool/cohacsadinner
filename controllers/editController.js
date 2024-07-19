@@ -1,11 +1,11 @@
 const connection = require("../models/connection");
 const uploadFile = require("../helpers/uploadFile");
 
-// Function to fetch a contestant by ID
+// Get contestant by ID
 const getContestantById = async (awardId, contestantId) => {
   try {
     const [rows] = await connection.execute(
-      "SELECT * FROM contestants WHERE award_id = ? AND id = ?",
+      "SELECT * FROM contestants c JOIN award_contestants ac ON c.id = ac.contestant_id WHERE ac.award_id = ? AND c.id = ?",
       [awardId, contestantId]
     );
     return rows[0];
@@ -15,7 +15,7 @@ const getContestantById = async (awardId, contestantId) => {
   }
 };
 
-// Function to update contestant details
+// Update contestant
 const updateContestant = async (
   awardId,
   contestantId,
@@ -23,41 +23,46 @@ const updateContestant = async (
   photoFile
 ) => {
   try {
-    // Fetch the existing contestant details for photo URL
-    const [existingContestant] = await connection.execute(
-      "SELECT * FROM contestants WHERE award_id = ? AND id = ?",
-      [awardId, contestantId]
-    );
+    console.log("Updating contestant:", editedDetails, photoFile);
 
-    // Upload photo if provided, or use the existing one
-    let photoUrl = existingContestant[0].photo_url;
-    if (photoFile) {
-      const uploadedPhoto = await uploadFile(
-        photoFile,
-        { name: editedDetails.nickname },
-        "photo"
-      );
-      photoUrl = uploadedPhoto.photo;
+    // Get existing contestant
+    const [existingContestant] = await connection.execute(
+      "SELECT * FROM contestants WHERE id = ?",
+      [contestantId]
+    );
+    console.log("Existing contestant:", existingContestant);
+
+    if (existingContestant.length === 0) {
+      throw new Error(`Contestant with ID ${contestantId} not found.`);
     }
 
-    // Update contestant details in the database
+    let photoUrl = existingContestant[0].photo_url;
+    if (photoFile) {
+      // Use uploadFile to handle file upload and get the generated filename
+      const contestantData = await uploadFile(
+        photoFile,
+        { name: editedDetails.nickname }, // Pass an object with a 'name' property
+        "photo"
+      );
+      console.log("Uploaded photo:", contestantData);
+      photoUrl = contestantData.photo;
+    }
+
+    // Update query for the contestant
     const updateQuery = `
       UPDATE contestants
-      SET
-        nickname = ?,
-        level = ?,
-        photo_url = ?,
-        votes = ?
-      WHERE award_id = ? AND id = ?
+      SET nickname = ?, level = ?, photo_url = ?, votes = ?
+      WHERE id = ?
     `;
     const values = [
       editedDetails.nickname,
       editedDetails.level,
       photoUrl,
       editedDetails.votes,
-      awardId,
       contestantId,
     ];
+
+    console.log("Updating with values:", values);
 
     await connection.query(updateQuery, values);
     console.log(`Contestant with ID ${contestantId} updated successfully.`);
@@ -67,7 +72,7 @@ const updateContestant = async (
   }
 };
 
-// Function to render the edit contestant page
+// Render edit contestant page
 const renderEditContestantPage = async (req, res) => {
   try {
     const awardId = req.params.awardId;
@@ -82,13 +87,13 @@ const renderEditContestantPage = async (req, res) => {
   }
 };
 
-// Function to handle the edit contestant form submission
+// Edit contestant
 const editContestant = async (req, res) => {
   try {
     const awardId = req.params.awardId;
     const contestantId = req.params.contestantId;
     const editedDetails = req.body;
-    const photoFile = req.files ? req.files.photo : null;
+    const photoFile = req.files ? req.files.contestantPhoto : null;
 
     await updateContestant(awardId, contestantId, editedDetails, photoFile);
 
