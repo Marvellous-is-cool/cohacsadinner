@@ -9,10 +9,19 @@ const adminContestantRouter = require("../adminRoutes/adminContestantRoute"); //
 // // // Index route
 router.get("/", async (req, res) => {
   try {
-    const awards = await clientController.getAwards();
-    res.render("index", { awards });
+    res.render("index");
   } catch (error) {
     console.error("Error rendering index:", error);
+    res.status(500).render("suspended");
+  }
+});
+
+router.get("/votingbooth", async (req, res) => {
+  try {
+    const awards = await clientController.getAwards();
+    res.render("main", { awards });
+  } catch (error) {
+    console.error("Error rendering main:", error);
     res.status(500).render("suspended");
   }
 });
