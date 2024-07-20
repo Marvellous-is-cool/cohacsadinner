@@ -16,8 +16,6 @@
     />
     <!-- Include your custom CSS -->
     <link rel="stylesheet" href="/styles/style.css" />
-    <!-- Include Google Font CSS -->
-    <!-- <link rel="stylesheet" href="path-to-your-downloaded-google-font.css" /> -->
     <style>
       .contestant-card {
         background: #6b2181;
@@ -27,6 +25,9 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         text-align: center;
         color: #fff;
+        opacity: 0; /* Ensure card starts hidden for AOS */
+        transform: translateY(10px); /* Initial offset for animation */
+        transition: opacity 0.5s, transform 0.5s; /* Smooth transition */
       }
       .img-small {
         max-width: 100%;
@@ -84,7 +85,12 @@
       <div
         class="contestant-card"
         data-aos="fade-up"
-        data-aos-delay="<%= index * 100 %>"
+        data-aos-duration="500"
+        data-aos-delay="<%= index * 50 %>"
+        <!--
+        Reduced
+        delay
+        --
       >
         <img
           src="/uploads/<%= contestant.photo_url %>"
@@ -108,7 +114,24 @@
     <!-- Include AOS JS -->
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.1/dist/aos.js"></script>
     <script>
-      AOS.init();
+      AOS.init({
+        duration: 500, // Duration of the animation
+        easing: "ease-in-out", // Easing function
+        once: true, // Animate only once
+      });
+
+      // Refresh AOS when search results change
+      function refreshAOS() {
+        AOS.refresh();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Refresh AOS after search results update
+        const searchInput = document.getElementById("searchInput");
+        searchInput.addEventListener("input", function () {
+          refreshAOS();
+        });
+      });
     </script>
     <!-- Include the search.js file -->
     <script src="/script/search.js"></script>
