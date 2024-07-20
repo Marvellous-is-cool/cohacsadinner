@@ -239,25 +239,25 @@
             event.preventDefault();
 
             var email = document.getElementById("email").value;
-            var amount = setAmount; // Use the setAmount value
+            var amount = setAmount;
 
-            // Validate email input
             if (!isValidEmail(email)) {
               document.getElementById("emailError").innerText =
                 "Please enter a valid email address.";
               return;
             }
 
-            document.getElementById("emailError").innerText = ""; // Clear error
+            document.getElementById("emailError").innerText = "";
 
-            // Store the entered email and amount in the request body
+            // Store the email in localStorage
+            localStorage.setItem("userEmail", email);
+
             var requestBody = {
               email: email,
               amount: amount,
               id: "<%= selectedContestant.id %>",
             };
 
-            // Change button text to indicate redirection
             var continueButton = document.getElementById("continueButton");
             if (continueButton) {
               continueButton.innerText =
@@ -265,7 +265,6 @@
               continueButton.disabled = true;
             }
 
-            // Fetch Paystack authentication URL directly from the client-side
             fetch(`/<%= selectedContestant.id %>/payment/get-url`, {
               method: "POST",
               headers: {
@@ -279,7 +278,6 @@
                   window.location.href = data.authorization_url;
                 } else {
                   console.error("Invalid response from server:", data);
-
                   if (continueButton) {
                     continueButton.innerText = "Continue";
                     continueButton.disabled = false;
@@ -288,7 +286,6 @@
               })
               .catch((error) => {
                 console.error("Error during fetch request:", error);
-
                 if (continueButton) {
                   continueButton.innerText = "Continue";
                   continueButton.disabled = false;
