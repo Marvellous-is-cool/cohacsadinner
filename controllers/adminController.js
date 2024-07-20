@@ -68,7 +68,7 @@ const adminController = {
 
   // Add Contestant operation
   addContestant: async (req, res) => {
-    const { contestantName, contestantLevel, selectedAwardId } = req.body;
+    const { contestantName, contestantDepartment, selectedAwardId } = req.body;
 
     // Check if contestantName is set before proceeding
     if (!contestantName) {
@@ -95,10 +95,10 @@ const adminController = {
     try {
       // Insert the contestant into the contestants table
       const contestantInsertSql =
-        "INSERT INTO contestants (nickname, level, photo_url) VALUES (?, ?, ?)";
+        "INSERT INTO contestants (nickname, department, photo_url) VALUES (?, ?, ?)";
       const contestantInsertValues = [
         contestantName,
-        contestantLevel,
+        contestantDepartment,
         contestantData.photo, // Use the generated filename
       ];
 

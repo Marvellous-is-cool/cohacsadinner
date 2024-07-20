@@ -1,89 +1,98 @@
-<!-- views/admin/edit-contestant.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Contestant</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    />
-  </head>
-
-  <body>
-    <div class="container mt-4">
-      <h2>Edit Contestant</h2>
-      <form
-        action="/admin/edit-contestant/<%= awardId %>/<%= contestant.id %>"
-        method="post"
-        enctype="multipart/form-data"
-      >
-        <div class="form-group">
-          <label for="nickname">Nickname</label>
-          <input
-            type="text"
-            class="form-control"
-            id="nickname"
-            name="nickname"
-            value="<%= contestant.nickname %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="level">Department</label>
-          <input
-            type="text"
-            class="form-control"
-            id="level"
-            name="level"
-            value="<%= contestant.level %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="photo_url">Photo URL</label>
-          <input
-            type="text"
-            class="form-control"
-            id="photo_url"
-            name="photo_url"
-            value="<%= contestant.photo_url %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="votes">Votes</label>
-          <input
-            type="number"
-            class="form-control"
-            id="votes"
-            name="votes"
-            value="<%= contestant.votes %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="photo">Upload Photo</label>
-          <input
-            type="file"
-            class="form-control-file"
-            id="photo"
-            name="photo_url"
-            accept="image/*"
-          />
-        </div>
-        <button type="submit" class="btn btn-primary">Update Contestant</button>
-        <a href="/admin/dashboard" class="btn btn-secondary ml-2">Cancel</a>
-      </form>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Contestant</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      margin-top: 40px;
+    }
+    h2 {
+      color: #343a40;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .btn-primary {
+      background-color: #343a40;
+      border-color: #343a40;
+    }
+    .btn-primary:hover {
+      background-color: #495057;
+      border-color: #495057;
+    }
+    .btn-primary:focus,
+    .btn-primary.focus {
+      background-color: #495057;
+      border-color: #495057;
+      box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
+    }
+    #editContestantForm {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="row">
+      <%- include('header') %>
+      <div class="col-md-6 offset-md-3" data-aos="fade-up">
+        <h2>Edit Contestant</h2>
+        <form id="editContestantForm" action="/admin/edit-contestant/<%= awardId %>/<%= contestant.id %>" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="nickname">Nickname</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" value="<%= contestant.nickname %>" required />
+          </div>
+          <div class="form-group">
+            <label for="department">Department</label>
+            <select class="form-control" id="department" name="department" required>
+              <option value="English" <%= contestant.department === 'English' ? 'selected' : '' %>>English</option>
+              <option value="Linguistics" <%= contestant.department === 'Linguistics' ? 'selected' : '' %>>Linguistics</option>
+              <option value="Religious" <%= contestant.department === 'Religious' ? 'selected' : '' %>>Religious</option>
+              <option value="Yoruba" <%= contestant.department === 'Yoruba' ? 'selected' : '' %>>Yoruba</option>
+              <option value="French" <%= contestant.department === 'French' ? 'selected' : '' %>>French</option>
+              <option value="Tourism" <%= contestant.department === 'Tourism' ? 'selected' : '' %>>Tourism</option>
+              <option value="Philosophy" <%= contestant.department === 'Philosophy' ? 'selected' : '' %>>Philosophy</option>
+              <option value="Theatre Arts" <%= contestant.department === 'Theatre Arts' ? 'selected' : '' %>>Theatre Arts</option>
+              <option value="History" <%= contestant.department === 'History' ? 'selected' : '' %>>History</option>
+              <option value="Joint" <%= contestant.department === 'Joint' ? 'selected' : '' %>>Joint</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="photo_url">Photo URL</label>
+            <input type="text" class="form-control" id="photo_url" name="photo_url" value="<%= contestant.photo_url %>" required />
+          </div>
+          <div class="form-group">
+            <label for="votes">Votes</label>
+            <input type="number" class="form-control" id="votes" name="votes" value="<%= contestant.votes %>" required />
+          </div>
+          <div class="form-group">
+            <label for="photo">Upload Photo</label>
+            <input type="file" class="form-control-file" id="photo" name="contestantPhoto" accept="image/*" />
+          </div>
+          <button type="submit" class="btn btn-primary">Update Contestant</button>
+          <a href="/admin/dashboard" class="btn btn-secondary ml-2">Cancel</a>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <%- include('footer') %>
-    <!-- Update the path if necessary -->
-    <!-- Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  </body>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+</body>
 </html>

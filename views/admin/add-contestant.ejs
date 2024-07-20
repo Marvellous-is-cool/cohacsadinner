@@ -56,6 +56,7 @@
           <h4>Select Award Title</h4>
           <form action="/admin/dashboard" method="post">
             <div class="form-group">
+              <%- include('header') %>
               <label for="awardTitle">Award Title:</label>
               <select
                 class="form-control"
@@ -101,11 +102,11 @@
               />
             </div>
             <div class="form-group">
-              <label for="contestantLevel">Contestant Department:</label>
+              <label for="contestantDepartment">Contestant Department:</label>
               <select
                 class="form-control"
-                id="contestantLevel"
-                name="contestantLevel"
+                id="contestantDepartment"
+                name="contestantDepartment"
                 required
               >
                 <option value="English">English</option>
@@ -159,6 +160,5 @@
           document.getElementById("addContestantForm").style.display = "block";
         });
     </script>
-    <%- include('footer') %>
   </body>
 </html>
