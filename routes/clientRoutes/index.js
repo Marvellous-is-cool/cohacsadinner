@@ -16,91 +16,91 @@ router.get("/", async (req, res) => {
   }
 });
 
-// router.get("/votingbooth", async (req, res) => {
-//   try {
-//     const awards = await clientController.getAwards();
-//     res.render("main", { awards });
-//   } catch (error) {
-//     console.error("Error rendering main:", error);
-//     res.status(500).render("suspended");
-//   }
-// });
-
-router.get("/end", async (req, res) => {
+router.get("/votingbooth", async (req, res) => {
   try {
-    res.render("bye");
+    const awards = await clientController.getAwards();
+    res.render("main", { awards });
   } catch (error) {
-    console.error("Error rendering index:", error);
-    res.status(500).send("Internal Server Error");
-    res.render("bye");
+    console.error("Error rendering main:", error);
+    res.status(500).render("suspended");
   }
 });
 
-// router.post("/vote", async (req, res) => {
+// router.get("/", async (req, res) => {
 //   try {
-//     const { award } = req.body;
-
-//     // Fetch selected award details
-//     const selectedAward = await clientController.getSelectedAward(award);
-
-//     // Fetch contestants for the selected award
-//     const contestants = await clientController.getContestantsForAward(award);
-
-//     // Add this line to log the fetched contestants
-
-//     res.render("contestants", {
-//       selectedAward,
-//       contestants,
-//     });
+//     res.render("bye");
 //   } catch (error) {
-//     console.error("Error processing vote:", error);
-//     res.status(500).render("suspended");
+//     console.error("Error rendering index:", error);
+//     res.status(500).send("Internal Server Error");
+//     res.render("bye");
 //   }
 // });
 
-// router.get("/contestant/:id/votenow/payment", async (req, res) => {
-//   try {
-//     const contestantId = req.params.id;
+router.post("/vote", async (req, res) => {
+  try {
+    const { award } = req.body;
 
-//     // Fetch contestant details by ID with associated award title
-//     const selectedContestant = await clientController.getContestantById(
-//       contestantId
-//     );
+    // Fetch selected award details
+    const selectedAward = await clientController.getSelectedAward(award);
 
-//     // Pass both selectedContestant and awardTitle to the template
-//     res.render("voteNow", {
-//       selectedContestant,
-//       awardTitle: selectedContestant.award_titles[0], // Assuming there's only one award title
-//     });
-//   } catch (error) {
-//     console.error("Error fetching contestant details:", error);
-//     res.status(500).render("suspended");
-//   }
-// });
+    // Fetch contestants for the selected award
+    const contestants = await clientController.getContestantsForAward(award);
 
-// router.use("/", voteNowRouter);
+    // Add this line to log the fetched contestants
+
+    res.render("contestants", {
+      selectedAward,
+      contestants,
+    });
+  } catch (error) {
+    console.error("Error processing vote:", error);
+    res.status(500).render("suspended");
+  }
+});
+
+router.get("/contestant/:id/votenow/payment", async (req, res) => {
+  try {
+    const contestantId = req.params.id;
+
+    // Fetch contestant details by ID with associated award title
+    const selectedContestant = await clientController.getContestantById(
+      contestantId
+    );
+
+    // Pass both selectedContestant and awardTitle to the template
+    res.render("voteNow", {
+      selectedContestant,
+      awardTitle: selectedContestant.award_titles[0], // Assuming there's only one award title
+    });
+  } catch (error) {
+    console.error("Error fetching contestant details:", error);
+    res.status(500).render("suspended");
+  }
+});
+
+router.use("/", voteNowRouter);
 
 // // Define the route for /voteNowSucess
-// router.get("/voteNowSucess", async (req, res) => {
-//   try {
-//     const { status, email, contestantId } = req.query;
+router.get("/voteNowSucess", async (req, res) => {
+  try {
+    const { status, email, contestantId } = req.query;
 
-//     // Fetch contestant details by ID using the correct function
-//     const selectedContestant = await clientController.getContestantById(
-//       parseInt(contestantId)
-//     );
+    // Fetch contestant details by ID using the correct function
+    const selectedContestant = await clientController.getContestantById(
+      parseInt(contestantId)
+    );
 
-//     res.render("voteNowSucess", {
-//       status,
-//       email,
-//       contestantId,
-//       selectedContestant,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching contestant details:", error);
-//     res.status(500).render("suspended");
-//   }
-// });
+    res.render("voteNowSucess", {
+      status,
+      email,
+      contestantId,
+      selectedContestant,
+    });
+  } catch (error) {
+    console.error("Error fetching contestant details:", error);
+    res.status(500).render("suspended");
+  }
+});
 
 // // Apply authMiddleware only to the routes under /admin
 router.use("/admin", authMiddleware, adminContestantRouter);
